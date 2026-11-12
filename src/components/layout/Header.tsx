@@ -12,16 +12,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
+import type { Category } from "@/lib/types";
 
-const categories = [
-  { name: "CARRY-ON", slug: "carry-on" },
-  { name: "MEDIANAS", slug: "medianas" },
-  { name: "GRANDES", slug: "grandes" },
-  { name: "MOCHILAS", slug: "mochilas" },
-  { name: "ACCESORIOS", slug: "accesorios" },
-];
+interface HeaderProps {
+  categories: Category[];
+}
 
-export default function Header() {
+export default function Header({ categories }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { itemCount } = useCart();
@@ -160,7 +157,7 @@ export default function Header() {
               <li key={cat.slug}>
                 <Link
                   href={`/categoria/${cat.slug}`}
-                  className="inline-block py-3 text-sm font-medium tracking-wide text-neutral-700 transition-colors hover:text-neutral-900"
+                  className="inline-block py-3 text-sm font-medium uppercase tracking-wide text-neutral-700 transition-colors hover:text-neutral-900"
                 >
                   {cat.name}
                 </Link>

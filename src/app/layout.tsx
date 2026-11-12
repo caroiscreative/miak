@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/lib/cart-context";
+import { getCategories } from "@/lib/supabase-queries";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,12 +24,14 @@ export const metadata: Metadata = {
     "Maletas, mochilas y accesorios de viaje diseñados para llevarte más lejos con menos peso. Envío a todo el país.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const categories = await getCategories();
+
   return (
     <html lang="es" data-theme="light" className={`${inter.variable} ${playfair.variable} h-full antialiased`} style={{ colorScheme: "light" }}>
       <body className="min-h-full flex flex-col">
         <CartProvider>
-          <Header />
+          <Header categories={categories} />
           <main className="flex-1">{children}</main>
           <Footer />
         </CartProvider>

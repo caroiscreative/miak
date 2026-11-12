@@ -1,18 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { products } from "@/lib/mock-data";
+import { getProductBySlug } from "@/lib/supabase-queries";
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductDetails from "@/components/product/ProductDetails";
 import ProductTabs from "@/components/product/ProductTabs";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: "Producto no encontrado — MIAK" };
   return {
     title: `${product.name} — MIAK`,
@@ -22,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
   const categoryLabel = product.category.replace(/-/g, " ");

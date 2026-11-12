@@ -1,17 +1,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import { products, categories } from "@/lib/mock-data";
+import { getCategoryBySlug, getProducts } from "@/lib/supabase-queries";
 import CategorySort from "@/components/product/CategorySort";
 import CategoryGrid from "@/components/product/CategoryGrid";
 
-export function generateStaticParams() {
-  return categories.map((c) => ({ slug: c.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const category = categories.find((c) => c.slug === slug);
+  const category = await getCategoryBySlug(slug);
   const label = category?.name ?? slug;
   return {
     title: `${label} — MIAK`,
@@ -21,9 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const category = categories.find((c) => c.slug === slug);
-  const categoryName = category?.name ?? slug.replace(/-/g, " ");
-  const filtered = products.filter((p) => p.category === slug);
+  const category = await getCategoryBySlug(slug);
+  if (!category) notFound();
+  const categoryName = category.name;
+  const filtered = await getProducts({ category: slug });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

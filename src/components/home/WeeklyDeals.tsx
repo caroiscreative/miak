@@ -2,15 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/lib/mock-data";
+import type { Product } from "@/lib/types";
 
 function formatPrice(n: number) {
   return "$" + n.toLocaleString("es-AR");
 }
 
-export default function WeeklyDeals() {
-  const deals = products.filter((p) => p.compareAtPrice).slice(0, 4);
+interface WeeklyDealsProps {
+  deals: Product[];
+}
 
+export default function WeeklyDeals({ deals }: WeeklyDealsProps) {
   return (
     <section className="py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">

@@ -4,27 +4,27 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { products } from "@/lib/mock-data";
+import type { Product } from "@/lib/types";
 
-const tabs = ["Carry-on", "Valijas", "Mochilas"];
+const tabs = [
+  { label: "Carry-on", slug: "carry-on" },
+  { label: "Mochilas", slug: "mochilas" },
+  { label: "Bolsos", slug: "bolsos" },
+];
 
 function formatPrice(n: number) {
   return "$" + n.toLocaleString("es-AR");
 }
 
-export default function Recommendations() {
-  const [activeTab, setActiveTab] = useState("Carry-on");
+interface RecommendationsProps {
+  products: Product[];
+}
+
+export default function Recommendations({ products }: RecommendationsProps) {
+  const [activeSlug, setActiveSlug] = useState("carry-on");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const tabToCategory: Record<string, string> = {
-    "Carry-on": "Carry-on",
-    Valijas: "Valijas",
-    Mochilas: "Mochilas",
-  };
-
-  const filtered = products.filter(
-    (p) => p.category === tabToCategory[activeTab]
-  );
+  const filtered = products.filter((p) => p.category === activeSlug);
 
   function scroll(direction: "left" | "right") {
     if (!scrollRef.current) return;
@@ -53,15 +53,15 @@ export default function Recommendations() {
           <div className="flex gap-1 border-b border-neutral-200">
             {tabs.map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
+                key={tab.slug}
+                onClick={() => setActiveSlug(tab.slug)}
                 className={`px-4 py-2 text-sm font-medium transition ${
-                  activeTab === tab
+                  activeSlug === tab.slug
                     ? "border-b-2 border-blue-600 text-neutral-900"
                     : "text-neutral-500 hover:text-neutral-700"
                 }`}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>

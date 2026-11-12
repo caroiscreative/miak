@@ -8,17 +8,25 @@ import Recommendations from "@/components/home/Recommendations";
 import Collections from "@/components/home/Collections";
 import Testimonials from "@/components/home/Testimonials";
 import FAQ from "@/components/home/FAQ";
+import { getProducts, getCategories } from "@/lib/supabase-queries";
 
-export default function Home() {
+export default async function Home() {
+  const [products, categories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ]);
+
+  const deals = products.filter((p) => p.compareAtPrice).slice(0, 4);
+
   return (
     <>
       <Hero />
       <TrustBadges />
-      <CategoryCarousel />
+      <CategoryCarousel categories={categories} />
       <BestSellers />
       <ProductSpotlight />
-      <WeeklyDeals />
-      <Recommendations />
+      <WeeklyDeals deals={deals} />
+      <Recommendations products={products} />
       <Collections />
       <Testimonials />
       <FAQ />

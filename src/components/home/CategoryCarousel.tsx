@@ -4,20 +4,13 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Category } from "@/lib/types";
 
-const categories = [
-  { name: "Carry-on", slug: "carry-on", seed: "miak-carryon" },
-  { name: "Medianas", slug: "medianas", seed: "miak-medianas" },
-  { name: "Grandes", slug: "grandes", seed: "miak-grandes" },
-  { name: "Mochilas", slug: "mochilas", seed: "miak-mochilas" },
-  { name: "Bolsos", slug: "bolsos", seed: "miak-bolsos" },
-  { name: "Organizadores", slug: "organizadores", seed: "miak-organizadores" },
-  { name: "Set de viaje", slug: "set-de-viaje", seed: "miak-set" },
-  { name: "Accesorios", slug: "accesorios", seed: "miak-accesorios" },
-  { name: "Ofertas", slug: "ofertas", seed: "miak-ofertas" },
-];
+interface CategoryCarouselProps {
+  categories: Category[];
+}
 
-export default function CategoryCarousel() {
+export default function CategoryCarousel({ categories }: CategoryCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   function scroll(direction: "left" | "right") {
@@ -74,7 +67,7 @@ export default function CategoryCarousel() {
             >
               <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-transparent transition group-hover:border-neutral-900 md:h-28 md:w-28">
                 <Image
-                  src={`https://picsum.photos/seed/${cat.seed}/200/200`}
+                  src={cat.image || `https://picsum.photos/seed/miak-${cat.slug}/200/200`}
                   alt={cat.name}
                   width={200}
                   height={200}

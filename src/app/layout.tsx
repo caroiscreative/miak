@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/lib/cart-context";
 import { getCategories } from "@/lib/supabase-queries";
+import { connection } from "next/server";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+  await connection();
   const categories = await getCategories();
 
   return (

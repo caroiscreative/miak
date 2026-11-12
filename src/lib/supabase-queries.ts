@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { supabase } from './supabase'
 import type { Product, ProductImage, ProductVariant, Category } from './types'
 
@@ -112,7 +113,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   return toProduct(data as unknown as ProductRow)
 }
 
-export async function getCategories(): Promise<Category[]> {
+async function _getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -127,6 +128,10 @@ export async function getCategories(): Promise<Category[]> {
     productCount: row.product_count ?? 0,
   }))
 }
+
+export const getCategories = unstable_cache(_getCategories, ['categories'], {
+  revalidate: 3600,
+})
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const { data, error } = await supabase
